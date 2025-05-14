@@ -5,6 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo - Aluga Filmes</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Slider styles for genre cards -->
+  <style>
+    .categories ul{
+      display:flex;
+      gap:1rem;
+      overflow-x:auto;
+      padding:0 0.5rem 1rem;
+      margin:0;
+      scroll-snap-type:x mandatory;
+      -webkit-overflow-scrolling:touch;
+    }
+    .categories ul li{
+      list-style:none;
+      flex:0 0 auto;
+      scroll-snap-align:start;
+    }
+    .categories ul li a{
+      display:block;
+      background:var(--primary, #ff9900);
+      color:#ffffff;
+      padding:1rem 1.25rem;
+      border-radius:8px;
+      font-weight:600;
+      text-align:center;
+      min-width:120px;
+      box-shadow:0 2px 6px rgba(0,0,0,.15);
+      transition:transform .2s, box-shadow .2s;
+      text-decoration:none;
+    }
+    .categories ul li a:hover{
+      transform:translateY(-4px);
+      box-shadow:0 4px 12px rgba(0,0,0,.2);
+    }
+    /* Optional scrollbar styling */
+    .categories ul::-webkit-scrollbar{
+      height:8px;
+    }
+    .categories ul::-webkit-scrollbar-track{
+      background:transparent;
+    }
+    .categories ul::-webkit-scrollbar-thumb{
+      background:rgba(0,0,0,.25);
+      border-radius:4px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -25,14 +70,15 @@
       <li><a href="#">Comédia</a></li>
       <li><a href="#">Terror</a></li>
       <li><a href="#">Drama</a></li>
+      <!-- Adicione mais gêneros conforme necessário -->
     </ul>
   </section>
 
   <section class="films">
     <div class="film-card">
-      <img src="film1.jpg" alt="O Conto do Ala">
+      <img src="https://ew.com/thmb/iyNDwCUxLoSUO1R515YPYe2e7Wg=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Brad-Pitt-F1-Poster-070524-fe9add0efa85450297b5f1d208ca9b79.jpg" alt="F1 filme">
       <div class="film-info">
-        <h3>O Conto do Ala</h3>
+        <h3>F1 The Movie</h3>
         <button>Assistir Trailer</button>
         <button>Alugar</button>
       </div>

@@ -1,77 +1,285 @@
-/* styles.css */
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+/* =============================================================
+   Aluga Filmes – Modern UI Redesign (2025‑05‑14)
+   Author: ChatGPT
+   Description: Responsive, elegant and accessible stylesheet to
+                replace the original styles.css. Includes dark-ish
+                gradient header, card hover effects, CSS variables,
+                Google Fonts, and mobile‑first layout.
+   ============================================================= */
+
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* ---------- CSS RESET ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  line-height: 1.6;
+  background: #f4f6f8;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- THEME VARIABLES ---------- */
+:root {
+  --clr-primary: #ff9900;
+  --clr-primary-dark: #e68900;
+  --clr-grad-start: #141e30; /* Navy blue */
+  --clr-grad-end: #243b55;   /* Slate blue */
+  --clr-bg-light: #ffffff;
+  --radius: 12px;
+  --shadow-sm: 0 2px 6px rgba(0,0,0,.08);
+  --shadow-lg: 0 12px 24px rgba(0,0,0,.15);
+}
+
+/* ---------- HEADER & NAV ---------- */
 header {
-  background-color: #333;
-  color: white;
-  padding: 10px 20px;
-  text-align: center;
+  background: linear-gradient(135deg,var(--clr-grad-start),var(--clr-grad-end));
+  color: #fff;
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+header h1 {
+  font-size: 1.8rem;
+  font-weight: 600;
+  letter-spacing: .5px;
 }
 
 nav ul {
   list-style: none;
-  padding: 0;
-}
-
-nav ul li {
-  display: inline;
-  margin-right: 10px;
+  display: flex;
+  gap: 24px;
 }
 
 nav ul li a {
-  color: white;
+  position: relative;
+  color: #fff;
   text-decoration: none;
+  font-weight: 500;
+  transition: opacity .3s ease;
 }
 
-footer {
-  background-color: #333;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  position: fixed;
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 0;
+  background: var(--clr-primary);
+  transition: width .3s ease;
+}
+
+nav ul li a:hover::after {
   width: 100%;
-  bottom: 0;
 }
 
-.films-container {
+nav ul li a:hover {
+  opacity: .8;
+}
+
+/* ---------- BUTTONS ---------- */
+button, .btn {
+  background: var(--clr-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: .95rem;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: background .3s ease, transform .2s ease;
+}
+
+button:hover, .btn:hover {
+  background: var(--clr-primary-dark);
+  transform: translateY(-2px);
+}
+
+button:active, .btn:active {
+  transform: scale(.97);
+}
+
+/* ---------- GLOBAL CONTAINER ---------- */
+main, section {
+  width: min(1240px, 90%);
+  margin-inline: auto;
+  padding-block: 2rem;
+}
+
+/* ---------- HERO (Index) ---------- */
+.hero {
+  height: 60vh;
+  background: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+}
+
+.hero h2 {
+  font-size: 2.2rem;
+  margin-bottom: .5rem;
+  font-weight: 700;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- FILM GRID ---------- */
+.films-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
 .film-card {
-  background-color: white;
-  border-radius: 5px;
-  padding: 10px;
-  margin: 10px;
-  width: 200px;
-  text-align: center;
+  background: var(--clr-bg-light);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform .3s ease, box-shadow .3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.film-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
 }
 
 .film-card img {
   width: 100%;
-  border-radius: 5px;
+  height: 320px;
+  object-fit: cover;
+}
+
+.film-info {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+  flex-grow: 1;
 }
 
 .film-info h3 {
-  font-size: 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--clr-grad-start);
+  flex-grow: 1;
 }
 
-button {
-  background-color: #ff9900;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 5px;
-  border-radius: 5px;
+.film-info button {
+  margin-top: auto;
 }
 
-button:hover {
-  background-color: #e68900;
+/* ---------- CART ---------- */
+.cart-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.cart-item {
+  background: var(--clr-bg-light);
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 1rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+}
+
+.cart-item img {
+  width: 90px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.cart-item-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* ---------- FOOTER ---------- */
+footer {
+  background: linear-gradient(135deg,var(--clr-grad-end),var(--clr-grad-start));
+  color: #fff;
+  text-align: center;
+  padding: 20px 10px;
+  margin-top: auto;
+}
+
+/* ---------- CONFIRMATION ---------- */
+.confirmation {
+  text-align: center;
+  background: var(--clr-bg-light);
+  padding: 3rem 2rem;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.confirmation p {
+  font-size: 1.1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- MEDIA QUERIES ---------- */
+@media (max-width: 600px) {
+  header {
+    padding: 15px 20px;
+  }
+
+  header h1 {
+    font-size: 1.5rem;
+  }
+
+  nav ul {
+    gap: 16px;
+  }
+
+  .hero h2 {
+    font-size: 1.8rem;
+  }
 }
