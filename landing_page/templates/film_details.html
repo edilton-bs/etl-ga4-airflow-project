@@ -3,32 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Detalhes do Filme - Aluga Filmes</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>{{ film.Title }} – Detalhes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    :root { --primary: #ff9900; --secondary: #333; --bg-light: #f4f4f4; }
+    body { background: var(--bg-light); margin: 0; font-family: 'Poppins', sans-serif; }
+    header { background: var(--secondary); padding: 1rem 2rem; color: #fff; }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    header nav ul { list-style: none; display: flex; gap: 1rem; margin: 0; }
+    header nav a { color: #fff; text-decoration: none; }
+
+    main { max-width: 800px; margin: 2rem auto; padding: 1rem; }
+    main h1 { margin-bottom: 1rem; font-size: 2rem; }
+    .poster { width: 100%; max-height: 450px; object-fit: cover; border-radius: 12px; }
+    .details-meta { display: flex; gap: 1.5rem; margin-top: 1rem; }
+    .details-meta p { margin: 0; font-weight: 500; }
+    .sinopse { margin-top: 2rem; line-height: 1.6; }
+
+    .details-actions { display: flex; gap: 1rem; margin-top: 2rem; }
+    .btn-back {
+      background: var(--secondary);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-back:hover { background: #444; }
+    .btn-alugar {
+      background: var(--primary);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-alugar:hover { background: #e68a00; }
+  </style>
 </head>
 <body>
   <header>
     <h1>Detalhes do Filme</h1>
     <nav>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="catalog.html">Catálogo</a></li>
-        <li><a href="cart.html">Carrinho</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catálogo</a></li>
+        <li><a href="/cart">Carrinho</a></li>
       </ul>
     </nav>
   </header>
 
-  <section class="film-details">
-    <img src="film1.jpg" alt="O Conto do Ala">
-    <div class="film-description">
-      <h2>O Conto do Ala</h2>
-      <p>Sinopse: Um conto de mistério que vai te prender do começo ao fim...</p>
-      <button>Alugar Agora</button>
+  <main>
+    <h1>{{ film.Title }}</h1>
+    <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}" class="poster">
+    <div class="details-meta">
+      <p><strong>Avaliação:</strong> {{ film.Vote_Average }} / 10</p>
+      <p><strong>Ano:</strong> {{ film.Year }}</p>
+      <p><strong>Língua:</strong> {{ film.Original_Language }}</p>
     </div>
-  </section>
+    <section class="sinopse">
+      <h2>Sinopse</h2>
+      <p>{{ film.Overview }}</p>
+    </section>
+    <div class="details-actions">
+      <button id="btn-alugar-detail" class="btn-alugar">Alugar</button>
+      <button onclick="window.history.back()" class="btn-back">← Voltar</button>
+    </div>
+  </main>
 
   <footer>
     <p>&copy; 2025 Aluga Filmes. Todos os direitos reservados.</p>
   </footer>
+
+  <script>
+  // Adiciona filme ao carrinho como array
+  document.getElementById('btn-alugar-detail').addEventListener('click', () => {
+    const movie = {
+      title: "{{ film.Title }}",
+      img: "{{ film.Poster_Url }}",
+      price: "R$ {{ '%.2f' % film.Price }}"
+    };
+    // Recupera ou inicializa o carrinho
+    const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+    cart.push(movie);
+    localStorage.setItem('cartItems', JSON.stringify(cart));
+    showPopup('Filme adicionado ao carrinho!');
+    // Redireciona após breve delay
+    setTimeout(() => { window.location.href = '/cart'; }, 800);
+  });
+
+  function showPopup(msg) {
+    const pop = document.createElement('div');
+    pop.className = 'toast';
+    pop.textContent = msg;
+    document.body.append(pop);
+    setTimeout(() => pop.remove(), 2000);
+  }
+</script>
 </body>
 </html>

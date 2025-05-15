@@ -14,6 +14,9 @@ df['Year'] = pd.to_datetime(df['Release_Date'], errors='coerce').dt.year
 # Gerar preços aleatórios para os filmes
 df['Price'] = df['Title'].apply(lambda x: round(10 + (len(x) % 5) * 2 + (len(x) % 3), 2))
 
+# Resetar índice para usar como id único
+df = df.reset_index().rename(columns={'index': 'id'})
+
 
 
 
@@ -37,8 +40,21 @@ def get_films():
     if genre and genre != 'Todos':
         data = data[data['Genre'].str.contains(genre, case=False, na=False)]
     # Garante as colunas corretas
-    films = data[['Title', 'Poster_Url', 'Genre', 'Year', 'Price', 'Overview', 'Vote_Average']].to_dict(orient='records')
+    films = data[['Title', 'Poster_Url', 'Genre', 'Year', 'Price', 'Overview', 'Vote_Average', 'id', 'Original_Language']].to_dict(orient='records')
     return jsonify(films)
+
+
+# Rota de detalhe
+@app.route('/film/<int:film_id>')
+def film_detail(film_id):
+    # Busca o filme pelo id
+    film = df[df['id'] == film_id]
+    if film.empty:
+        # opcional: 404 customizado
+        return "Filme não encontrado", 404
+    # Converte para dict simples
+    film = film.iloc[0].to_dict()
+    return render_template('film_details.html', film=film)
 
 if __name__ == '__main__':
     app.run(debug=True)
