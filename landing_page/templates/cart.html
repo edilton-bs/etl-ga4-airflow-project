@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrinho - Aluga Filmes</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
     :root {
       --primary: #ff9900;
@@ -35,9 +35,9 @@
     <h1>Carrinho</h1>
     <nav>
       <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="catalog.html">Catálogo</a></li>
-        <li><a href="cart.html">Carrinho</a></li>
+        <li><a href="/">Home</a></li>
+        <li><a href="catalog">Catálogo</a></li>
+        <li><a href="cart">Carrinho</a></li>
       </ul>
     </nav>
   </header>

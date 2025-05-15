@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo - Aluga Filmes</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <!-- CSV parser -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+  <!-- Inline styles for slider (omit if in styles.css) -->
+  <style>
+    .categories ul { display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; margin: 0; scroll-snap-type: x mandatory; }
+    .categories ul li { list-style: none; flex: 0 0 auto; scroll-snap-align: start; }
+    .categories ul li button { background: var(--primary); color: #fff; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; transition: transform .2s; }
+    .categories ul li button.active { box-shadow: 0 0 0 3px rgba(255,153,0,.5); }
+    .categories ul li button:hover { transform: translateY(-2px); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Catálogo de Filmes</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="catalog">Catálogo</a></li>
+        <li><a href="cart">Carrinho</a></li>
+      </ul>
+    </nav>
+  </header>
+
+<section class="categories">
+    <h2>Gêneros</h2>
+    <ul id="genre-list"></ul>
+  </section>
+
+  <section class="films" id="films"></section>
+
+  <footer>
+    <p>&copy; 2025 Aluga Filmes. Todos os direitos reservados.</p>
+  </footer>
+
+ <script>
+    // 1) Função genérica para buscar e renderizar (com filtro opcional)
+    async function carregarFilmes(genre = 'Todos') {
+      const url = genre === 'Todos'
+        ? '/films'
+        : `/films?genre=${encodeURIComponent(genre)}`;
+      const resp = await fetch(url);
+      const filmes = await resp.json();
+      renderFilms(filmes);
+    }
+
+    // 2) Monta os cards a partir do JSON
+    function renderFilms(list) {
+      const container = document.getElementById('films');
+      container.innerHTML = '';
+      list.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'film-card';
+        card.innerHTML = `
+          <img src="${f.Poster_Url}" alt="${f.Title}">
+          <div class="film-info">
+            <h3>${f.Title}</h3>
+            <button class="btn-alugar"
+              data-title="${f.Title}"
+              data-img="${f.Poster_Url}"
+              data-price="R$ 12,99">
+              Alugar
+            </button>
+          </div>`;
+        card.querySelector('.btn-alugar')
+            .addEventListener('click', () => addToCart(f));
+        container.appendChild(card);
+      });
+    }
+
+    // 3) Constrói o slider de gêneros dinamicamente
+    async function montarGeneros() {
+      const resp = await fetch('/films');
+      const filmes = await resp.json();
+      const setG = new Set();
+      filmes.forEach(f => f.Genre.split(',').map(g=>g.trim()).forEach(g=>setG.add(g)));
+      const ul = document.getElementById('genre-list');
+      ['Todos', ...setG].forEach(g => {
+        const li = document.createElement('li');
+        li.innerHTML = `<button data-genre="${g}">${g}</button>`;
+        ul.appendChild(li);
+      });
+      ul.addEventListener('click', e => {
+        if (e.target.tagName==='BUTTON') {
+          // remove classe active
+          ul.querySelectorAll('button')
+            .forEach(b=>b.classList.remove('active'));
+          e.target.classList.add('active');
+          carregarFilmes(e.target.dataset.genre);
+        }
+      });
+    }
+
+    // 4) Funções utilitárias
+    function showPopup(msg) {
+      const pop = document.createElement('div');
+      pop.className = 'toast';
+      pop.textContent = msg;
+      document.body.appendChild(pop);
+      setTimeout(()=>pop.remove(),2000);
+    }
+    function addToCart(movie) {
+      const cart = JSON.parse(localStorage.getItem('cartItems')||'[]');
+      cart.push(movie);
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      showPopup('Filme adicionado ao carrinho!');
+    }
+
+    // 5) Inicialização
+    window.addEventListener('DOMContentLoaded', () => {
+      montarGeneros();
+      carregarFilmes();
+    });
+  </script>
+</body>
+</html>
