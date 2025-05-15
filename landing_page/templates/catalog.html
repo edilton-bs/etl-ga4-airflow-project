@@ -108,7 +108,7 @@
   </footer>
 
   <script>
-   const MAX_PER_PAGE = 10;
+    const MAX_PER_PAGE = 15;
     let currentList = [];
     let currentPage = 1;
 
@@ -124,26 +124,18 @@
     }
 
     function renderPage() {
-  const start = (currentPage - 1) * MAX_PER_PAGE;
-  const end   = currentPage *     MAX_PER_PAGE;
-  const slice = currentList.slice(start, end);
-  renderFilms(slice);
+      const start = (currentPage - 1) * MAX_PER_PAGE;
+      const end = currentPage * MAX_PER_PAGE;
+      const slice = currentList.slice(start, end);
+      renderFilms(slice);
+      const btnMore = document.getElementById('btn-more');
+      btnMore.style.display = currentList.length > end ? 'block' : 'none';
+    }
 
-  // Se houver mais, exibe “Mostrar Mais”
-  const btnMore = document.getElementById('btn-more');
-  if (currentList.length > end) btnMore.style.display = 'block';
-  else                            btnMore.style.display = 'none';
-}
-
-// Botão “Mostrar Mais” no HTML, após a section#films:
-// <button id="btn-more" style="display:none">Mostrar Mais</button>
-document.getElementById('btn-more')
-  .addEventListener('click', () => {
-    currentPage++;
-    renderPage();
-});
-
-
+    document.getElementById('btn-more').addEventListener('click', () => {
+      currentPage++;
+      renderPage();
+    });
 
     function renderFilms(list) {
       const container = document.getElementById('films');
@@ -160,7 +152,7 @@ document.getElementById('btn-more')
               <button class="btn-alugar"
                 data-title="${f.Title}"
                 data-img="${f.Poster_Url}"
-                data-price="R$ 12,99">
+                data-price="R$ ${f.Price},99">
                 Alugar
               </button>
             </div>
@@ -173,7 +165,7 @@ document.getElementById('btn-more')
       const resp = await fetch('/films');
       const filmes = await resp.json();
       const setG = new Set();
-      filmes.forEach(f => f.Genre.split(',').map(g=>g.trim()).forEach(g=>setG.add(g)));
+      filmes.forEach(f => f.Genre.split(',').map(g => g.trim()).forEach(g => setG.add(g)));
       const ul = document.getElementById('genre-list');
       ['Todos', ...setG].forEach(g => {
         const li = document.createElement('li');
@@ -193,14 +185,12 @@ document.getElementById('btn-more')
       const pop = document.createElement('div');
       pop.className = 'toast';
       pop.textContent = msg;
-      document.body.append(pop);
+      document.body.appendChild(pop);
       setTimeout(() => pop.remove(), 2000);
     }
 
     function addToCart(movie) {
-      const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-      cart.push(movie);
-      localStorage.setItem('cartItems', JSON.stringify(cart));
+      localStorage.setItem('ultimoFilme', JSON.stringify(movie));
       showPopup('Filme adicionado ao carrinho!');
     }
 

@@ -11,6 +11,9 @@ df.dropna(inplace=True)
 
 df['Year'] = pd.to_datetime(df['Release_Date'], errors='coerce').dt.year
 
+# Gerar preços aleatórios para os filmes
+df['Price'] = df['Title'].apply(lambda x: round(10 + (len(x) % 5) * 2 + (len(x) % 3), 2))
+
 
 
 
@@ -34,7 +37,7 @@ def get_films():
     if genre and genre != 'Todos':
         data = data[data['Genre'].str.contains(genre, case=False, na=False)]
     # Garante as colunas corretas
-    films = data[['Title', 'Poster_Url', 'Genre', 'Year']].to_dict(orient='records')
+    films = data[['Title', 'Poster_Url', 'Genre', 'Year', 'Price', 'Overview', 'Vote_Average']].to_dict(orient='records')
     return jsonify(films)
 
 if __name__ == '__main__':
