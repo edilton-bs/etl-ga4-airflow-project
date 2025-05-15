@@ -11,11 +11,7 @@
       --secondary: #333;
       --bg-light: #f4f4f4;
     }
-    body { background: var(--bg-light); margin: 0; font-family: 'Poppins', sans-serif; }
-    header { background: var(--secondary); padding: 1rem 2rem; color: #fff; }
-    header h1 { margin: 0; font-size: 1.5rem; }
-    header nav ul { list-style: none; display: flex; gap: 1rem; margin: 0; }
-    header nav a { color: #fff; text-decoration: none; }
+    
 
     main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
     /* Gêneros slider */
@@ -99,10 +95,7 @@
     }
     button#btn-more:hover { background: #e68a00; }
 
-    footer {
-      text-align: center; padding: 1rem 0;
-      background: var(--secondary); color: #fff; margin-top: 3rem;
-    }
+    
   </style>
 </head>
 <body>
@@ -132,7 +125,7 @@
   </footer>
 
   <script>
-    const MAX_PER_PAGE = 15;
+    const MAX_PER_PAGE = 16;
     let currentList = [];
     let currentPage = 1;
 
@@ -176,7 +169,7 @@
                 data-title="${f.Title}"
                 data-img="${f.Poster_Url}"
                 data-price="R$ ${Number(f.Price).toFixed(2)}">
-                Alugar
+                Add ao carrinho
               </button>
             </div>
           </div>`;

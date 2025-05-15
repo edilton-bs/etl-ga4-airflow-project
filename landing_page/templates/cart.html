@@ -11,11 +11,7 @@
       --secondary: #333;
       --bg-light: #f9f9f9;
     }
-    body { background: var(--bg-light); font-family: Poppins, sans-serif; margin:0; padding:0; }
-    header { background: var(--secondary); color: #fff; padding: 1rem; }
-    header h1 { margin: 0; font-size: 1.5rem; }
-    nav ul { list-style: none; display: flex; gap:1rem; padding:0; margin:0; }
-    nav a { color: #fff; text-decoration:none; }
+    
     main { max-width:800px; margin: 2rem auto; padding:0 1rem; }
     .cart-items { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1rem; }
     .cart-items h2 { margin-top:0; font-size:1.75rem; color: var(--secondary); }
@@ -26,12 +22,24 @@
     .cart-item-info h3 { margin:0 0 .5rem; font-size:1.25rem; color: var(--secondary); }
     .cart-item-info p { margin:0; }
     .remove-item {
-      position:absolute; top:0.5rem; right:0.5rem;
-      background:transparent; border:none;
-      font-size:1.2rem; color:#999; cursor:pointer;
-      transition: color .2s;
-    }
-    .remove-item:hover { color:#333; }
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #999;
+  cursor: pointer;
+  z-index: 1;
+  transition: color .2s;
+}
+
+.remove-item:hover {
+  color: #333;
+  background: transparent;  /* anula o background da regra global button:hover */
+  transform: none;          /* impede o translate da regra global button:hover */
+}
+
     .cart-total { display:flex; justify-content: space-between; align-items:center; padding:1rem 0; font-size:1.25rem; font-weight:600; }
     .cart-actions { display:flex; justify-content:flex-end; gap:1rem; padding:1rem 0; }
     .cart-actions button {
@@ -42,7 +50,7 @@
     .cart-actions .secondary:hover { background:#ccc; }
     .cart-actions .primary { background: var(--primary); color:#fff; }
     .cart-actions .primary:hover { background:#e68a00; }
-    footer { text-align:center; padding:1rem 0; background: var(--secondary); color:#fff; margin-top:2rem; }
+    
   </style>
 </head>
 <body>
