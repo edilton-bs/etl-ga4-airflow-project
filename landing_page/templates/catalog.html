@@ -5,52 +5,146 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo - Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-  <!-- CSV parser -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-  <!-- Inline styles for slider (omit if in styles.css) -->
   <style>
-    .categories ul { display: flex; gap: 1rem; overflow-x: auto; padding: 0.5rem; margin: 0; scroll-snap-type: x mandatory; }
-    .categories ul li { list-style: none; flex: 0 0 auto; scroll-snap-align: start; }
-    .categories ul li button { background: var(--primary); color: #fff; border: none; padding: 0.75rem 1rem; border-radius: 8px; cursor: pointer; transition: transform .2s; }
-    .categories ul li button.active { box-shadow: 0 0 0 3px rgba(255,153,0,.5); }
-    .categories ul li button:hover { transform: translateY(-2px); }
+    /* Gêneros slider */
+    /* Gêneros slider */
+.categories ul {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  margin: 0;
+  scroll-snap-type: x mandatory;
+}
+.categories li {
+  list-style: none;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
+}
+.categories button {
+  background: var(--primary);   /* #ff9900 no seu tema */
+  color: #ffffff;                /* texto branco */
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform .2s, box-shadow .2s;
+}
+.categories button.active {
+  background: var(--primary);   /* mantém o mesmo laranja */
+  box-shadow: 0 0 0 3px rgba(255,153,0,0.5);
+}
+.categories button:hover {
+  transform: translateY(-2px);
+}
+
+
+    /* Grid de cards de filmes */
+    .films-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.5rem; padding: 1rem; }
+    .film-card { background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; transition: transform .2s, box-shadow .2s; }
+    .film-card:hover { transform: translateY(-4px); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .film-card img { width: 100%; height: auto; object-fit: cover; }
+    .film-info { padding: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+    .film-info h3 { font-size: 1.1rem; margin: 0; }
+    .controls { display: flex; justify-content: space-between; gap: 0.5rem; margin-top: 0.75rem; }
+    .controls button { flex: 1; padding: 0.5rem; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: background .2s; }
+    .controls .btn-trailer { background: var(--secondary); color: #fff; }
+    .controls .btn-trailer:hover { background: #444; }
+    .controls .btn-alugar { background: var(--primary); color: #fff; }
+    .controls .btn-alugar:hover { background: #e68a00; }
+    /* Limita cada card a no máximo 200px de largura */
+.film-card {
+  max-width: 200px;          /* centraliza internamente se o grid permitir espaço extra */
+}
+
+/* Força as imagens a ocuparem toda a largura do card e altura fixa */
+.film-card img {
+  width: 100%;
+  height: 300px;            /* altura fixa e uniforme */
+  object-fit: cover;        /* mantém proporção e recorta o excesso */
+}
+
+/* Ajusta o grid para centralizar e limitar colunas */
+.films-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem; /* número de colunas depende do tamanho da tela */
+  justify-items: center;    /* garante que cards menores fiquem centralizados na célula */
+}
+
+:root {
+  --primary: #ff9900;
+  /* ... */
+}
+
+
   </style>
 </head>
 <body>
   <header>
-    <h1>Catálogo de Filmes</h1>
+    <h1>Aluga Filmes</h1>
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="catalog">Catálogo</a></li>
-        <li><a href="cart">Carrinho</a></li>
+        <li><a href="/catalog">Catálogo</a></li>
+        <li><a href="/cart">Carrinho</a></li>
       </ul>
     </nav>
   </header>
 
-<section class="categories">
-    <h2>Gêneros</h2>
-    <ul id="genre-list"></ul>
-  </section>
+  <main>
+    <section class="categories">
+      <h2>Gêneros</h2>
+      <ul id="genre-list"></ul>
+    </section>
 
-  <section class="films" id="films"></section>
+    <section class="films-container" id="films"></section>
+<button id="btn-more" class="btn-primary">Mostrar Mais</button>
+
 
   <footer>
     <p>&copy; 2025 Aluga Filmes. Todos os direitos reservados.</p>
   </footer>
 
- <script>
-    // 1) Função genérica para buscar e renderizar (com filtro opcional)
+  <script>
+   const MAX_PER_PAGE = 10;
+    let currentList = [];
+    let currentPage = 1;
+
     async function carregarFilmes(genre = 'Todos') {
       const url = genre === 'Todos'
         ? '/films'
         : `/films?genre=${encodeURIComponent(genre)}`;
       const resp = await fetch(url);
-      const filmes = await resp.json();
-      renderFilms(filmes);
+      const data = await resp.json();
+      currentList = data;
+      currentPage = 1;
+      renderPage();
     }
 
-    // 2) Monta os cards a partir do JSON
+    function renderPage() {
+  const start = (currentPage - 1) * MAX_PER_PAGE;
+  const end   = currentPage *     MAX_PER_PAGE;
+  const slice = currentList.slice(start, end);
+  renderFilms(slice);
+
+  // Se houver mais, exibe “Mostrar Mais”
+  const btnMore = document.getElementById('btn-more');
+  if (currentList.length > end) btnMore.style.display = 'block';
+  else                            btnMore.style.display = 'none';
+}
+
+// Botão “Mostrar Mais” no HTML, após a section#films:
+// <button id="btn-more" style="display:none">Mostrar Mais</button>
+document.getElementById('btn-more')
+  .addEventListener('click', () => {
+    currentPage++;
+    renderPage();
+});
+
+
+
     function renderFilms(list) {
       const container = document.getElementById('films');
       container.innerHTML = '';
@@ -61,20 +155,20 @@
           <img src="${f.Poster_Url}" alt="${f.Title}">
           <div class="film-info">
             <h3>${f.Title}</h3>
-            <button class="btn-alugar"
-              data-title="${f.Title}"
-              data-img="${f.Poster_Url}"
-              data-price="R$ 12,99">
-              Alugar
-            </button>
+            <div class="controls">
+              <button class="btn-trailer">Trailer</button>
+              <button class="btn-alugar"
+                data-title="${f.Title}"
+                data-img="${f.Poster_Url}"
+                data-price="R$ 12,99">
+                Alugar
+              </button>
+            </div>
           </div>`;
-        card.querySelector('.btn-alugar')
-            .addEventListener('click', () => addToCart(f));
         container.appendChild(card);
       });
     }
 
-    // 3) Constrói o slider de gêneros dinamicamente
     async function montarGeneros() {
       const resp = await fetch('/films');
       const filmes = await resp.json();
@@ -87,32 +181,40 @@
         ul.appendChild(li);
       });
       ul.addEventListener('click', e => {
-        if (e.target.tagName==='BUTTON') {
-          // remove classe active
-          ul.querySelectorAll('button')
-            .forEach(b=>b.classList.remove('active'));
+        if (e.target.tagName === 'BUTTON') {
+          ul.querySelectorAll('button').forEach(b => b.classList.remove('active'));
           e.target.classList.add('active');
           carregarFilmes(e.target.dataset.genre);
         }
       });
     }
 
-    // 4) Funções utilitárias
     function showPopup(msg) {
       const pop = document.createElement('div');
       pop.className = 'toast';
       pop.textContent = msg;
-      document.body.appendChild(pop);
-      setTimeout(()=>pop.remove(),2000);
+      document.body.append(pop);
+      setTimeout(() => pop.remove(), 2000);
     }
+
     function addToCart(movie) {
-      const cart = JSON.parse(localStorage.getItem('cartItems')||'[]');
+      const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
       cart.push(movie);
       localStorage.setItem('cartItems', JSON.stringify(cart));
       showPopup('Filme adicionado ao carrinho!');
     }
 
-    // 5) Inicialização
+    document.body.addEventListener('click', e => {
+      if (e.target.classList.contains('btn-alugar')) {
+        const btn = e.target;
+        addToCart({
+          title: btn.dataset.title,
+          img: btn.dataset.img,
+          price: btn.dataset.price
+        });
+      }
+    });
+
     window.addEventListener('DOMContentLoaded', () => {
       montarGeneros();
       carregarFilmes();
