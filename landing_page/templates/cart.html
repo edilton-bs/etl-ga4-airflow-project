@@ -11,124 +11,38 @@
       --secondary: #333;
       --bg-light: #f9f9f9;
     }
-    body {
-      background: var(--bg-light);
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      padding: 0;
+    body { background: var(--bg-light); font-family: Poppins, sans-serif; margin:0; padding:0; }
+    header { background: var(--secondary); color: #fff; padding: 1rem; }
+    header h1 { margin: 0; font-size: 1.5rem; }
+    nav ul { list-style: none; display: flex; gap:1rem; padding:0; margin:0; }
+    nav a { color: #fff; text-decoration:none; }
+    main { max-width:800px; margin: 2rem auto; padding:0 1rem; }
+    .cart-items { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1rem; }
+    .cart-items h2 { margin-top:0; font-size:1.75rem; color: var(--secondary); }
+    #empty-msg { padding: 1rem; text-align:center; color:#666; }
+    .cart-item { position: relative; display: flex; gap: 1rem; align-items: center; padding: 1rem 0; border-bottom:1px solid #eee; }
+    .cart-item:last-child { border-bottom:none; }
+    .cart-item img { width:100px; height:150px; border-radius:4px; object-fit:cover; }
+    .cart-item-info h3 { margin:0 0 .5rem; font-size:1.25rem; color: var(--secondary); }
+    .cart-item-info p { margin:0; }
+    .remove-item {
+      position:absolute; top:0.5rem; right:0.5rem;
+      background:transparent; border:none;
+      font-size:1.2rem; color:#999; cursor:pointer;
+      transition: color .2s;
     }
-    header {
-      background: var(--secondary);
-      color: #fff;
-      padding: 1rem;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    nav ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
-      padding: 0;
-      margin: 0;
-    }
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    main {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .cart-items {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 1rem;
-    }
-    .cart-items h2 {
-      margin-top: 0;
-      font-size: 1.75rem;
-      color: var(--secondary);
-    }
-    .cart-item {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1rem 0;
-      border-bottom: 1px solid #eee;
-    }
-    .cart-item:last-child {
-      border-bottom: none;
-    }
-    .cart-item img {
-      width: 80px;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 4px;
-    }
-    .cart-item-info {
-      flex: 1;
-    }
-    .cart-item-info h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.2rem;
-      color: var(--secondary);
-    }
-    .cart-item-info p {
-      margin: 0;
-      font-size: 1rem;
-    }
-    .cart-total {
-      text-align: right;
-      font-size: 1.25rem;
-      margin: 1rem 0;
-      color: var(--secondary);
-    }
-    .cart-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin: 1rem 0;
-    }
+    .remove-item:hover { color:#333; }
+    .cart-total { display:flex; justify-content: space-between; align-items:center; padding:1rem 0; font-size:1.25rem; font-weight:600; }
+    .cart-actions { display:flex; justify-content:flex-end; gap:1rem; padding:1rem 0; }
     .cart-actions button {
-      font-size: 1rem;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      font-size:1rem; padding:.75rem 1.5rem; border:none; border-radius:6px; cursor:pointer;
       transition: background .2s;
     }
-    .cart-actions .primary {
-      background: var(--primary);
-      color: #fff;
-    }
-    .cart-actions .primary:hover {
-      background: #e68a00;
-    }
-    .cart-actions .secondary {
-      background: #e0e0e0;
-      color: var(--secondary);
-    }
-    .cart-actions .secondary:hover {
-      background: #ccc;
-    }
-    .empty-message {
-      text-align: center;
-      padding: 2rem 0;
-      color: #666;
-      font-size: 1.1rem;
-    }
-    footer {
-      text-align: center;
-      padding: 1rem 0;
-      background: var(--secondary);
-      color: #fff;
-      margin-top: 2rem;
-    }
+    .cart-actions .secondary { background:#e0e0e0; color: var(--secondary); }
+    .cart-actions .secondary:hover { background:#ccc; }
+    .cart-actions .primary { background: var(--primary); color:#fff; }
+    .cart-actions .primary:hover { background:#e68a00; }
+    footer { text-align:center; padding:1rem 0; background: var(--secondary); color:#fff; margin-top:2rem; }
   </style>
 </head>
 <body>
@@ -145,13 +59,11 @@
 
   <main>
     <section class="cart-items">
-      <h2>Seu Carrinho</h2>
-      <div id="items-list"></div>
-      <div class="empty-message" id="empty-msg" style="display:none;">
-        Seu carrinho está vazio.
-      </div>
-      <div class="cart-total" id="cart-total" style="display:none;">
-        Total: <span id="total-value"></span>
+      <h2>Filmes no seu carrinho</h2>
+      <p id="empty-msg">Seu carrinho está vazio.</p>
+      <div class="cart-item-list" id="items-list"></div>
+      <div class="cart-total" id="cart-total">
+        <span>Total:</span><span id="total-value">R$ 0.00</span>
       </div>
     </section>
 
@@ -181,12 +93,14 @@
           return;
         }
         emptyMsg.style.display = 'none';
+        totalElem.style.display = 'flex';
         let sum = 0;
-        cart.forEach(item => {
+        cart.forEach((item, index) => {
           sum += parseFloat(item.price.replace(/[^0-9.]/g, ''));
           const div = document.createElement('div');
           div.className = 'cart-item';
           div.innerHTML = `
+            <button class="remove-item" data-index="${index}">&times;</button>
             <img src="${item.img}" alt="${item.title}">
             <div class="cart-item-info">
               <h3>${item.title}</h3>
@@ -196,8 +110,18 @@
           itemsList.appendChild(div);
         });
         totalValue.textContent = `R$ ${sum.toFixed(2)}`;
-        totalElem.style.display = 'block';
       }
+
+      // Remover item individual
+      document.body.addEventListener('click', e => {
+        if (e.target.classList.contains('remove-item')) {
+          const idx = parseInt(e.target.dataset.index, 10);
+          const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+          cart.splice(idx, 1);
+          localStorage.setItem('cartItems', JSON.stringify(cart));
+          renderCart();
+        }
+      });
 
       document.getElementById('clear-btn').addEventListener('click', () => {
         localStorage.removeItem('cartItems');
