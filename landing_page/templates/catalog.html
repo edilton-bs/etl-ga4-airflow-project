@@ -2,8 +2,8 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo - Aluga Filmes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catálogo – Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
   <style>
     :root {
@@ -11,91 +11,72 @@
       --secondary: #333;
       --bg-light: #f4f4f4;
     }
-    
-
-    main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-    /* Gêneros slider */
-    .categories ul {
-      display: flex; gap: 1rem; overflow-x: auto;
-      padding: 0.75rem 0; margin: 0 0 2rem 0;
-      scroll-snap-type: x mandatory;
+    body { background: var(--bg-light); margin:0; font-family: 'Poppins', sans-serif; }
+    main { max-width:1200px; margin:2rem auto; padding:0 1rem; }
+    .filters {
+      display:flex; flex-wrap:wrap; gap:1rem; margin-bottom:2rem;
+      padding:1rem; background:#fff; border-radius:8px;
+      box-shadow:0 2px 4px rgba(0,0,0,.05);
     }
-    .categories li { list-style: none; flex: 0 0 auto; scroll-snap-align: start; }
-    .categories button {
-      background: var(--primary); color: #fff;
-      border: none; padding: 0.5rem 1rem; border-radius: 8px;
-      cursor: pointer; font-weight: 600;
-      transition: transform .2s, box-shadow .2s;
+    .filter { flex:1 1 200px; display:flex; flex-direction:column; }
+    .filter label { font-weight:600; margin-bottom:.5rem; }
+    .filter input, .filter select {
+      padding:.5rem; border:1px solid #ccc; border-radius:4px;
     }
-    .categories button.active { box-shadow: 0 0 0 3px rgba(255,153,0,0.5); }
-    .categories button:hover { transform: translateY(-2px); }
+    .filter span { margin:0 .5rem; align-self:center; }
+    .filters button {
+      padding:.5rem 1rem; background:var(--primary); color:#fff;
+      border:none; border-radius:4px; cursor:pointer; height:2.5rem;
+      align-self:flex-end; transition:opacity .2s;
+    }
+    .filters button:hover { opacity:.9; }
 
-    /* Grid de cards de filmes */
     .films-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
-      gap: 1.5rem;
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
+      gap:1.5rem;
     }
     .film-card {
-      position: relative;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      transition: transform .2s, box-shadow .2s;
+      position:relative; background:#fff; border-radius:12px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      display:flex; flex-direction:column; overflow:hidden;
+      transition:transform .2s, box-shadow .2s;
     }
     .film-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      transform:translateY(-4px);
+      box-shadow:0 4px 16px rgba(0,0,0,0.15);
     }
     .film-card img {
-      width: 100%; height: 250px;
-      object-fit: cover;
+      width:100%; height:250px; object-fit:cover;
     }
     .rating {
-      position: absolute;
-      top: 0.5rem; right: 0.5rem;
-      background: rgba(0,0,0,0.7);
-      color: #fff; padding: 0.25rem 0.5rem;
-      border-radius: 4px; font-size: 0.85rem; font-weight: 600;
+      position:absolute; top:.5rem; right:.5rem;
+      background:rgba(0,0,0,0.7); color:#fff;
+      padding:.25rem .5rem; border-radius:4px;
+      font-size:.85rem; font-weight:600;
     }
-    .film-info {
-      padding: 1rem;
-      flex: 1;
-      display: flex; flex-direction: column; justify-content: space-between;
+    .film-info { padding:1rem; flex:1; display:flex; flex-direction:column; }
+    .film-info h3 { font-size:1.1rem; margin:0 0 .5rem; }
+    .controls { display:flex; gap:.5rem; margin-top:auto; }
+    .controls button, .controls a {
+      flex:1; padding:.5rem; border:none; border-radius:8px;
+      cursor:pointer; font-weight:600; text-align:center;
+      transition:background .2s; text-decoration:none;
     }
-    .film-info h3 { font-size: 1.1rem; margin: 0 0 0.5rem; }
-    .controls {
-      display: flex; gap: 0.5rem;
-    }
-    .controls button {
-      flex: 1;
-      padding: 0.5rem;
-      border: none; border-radius: 8px;
-      cursor: pointer; font-weight: 600;
-      transition: background .2s;
-    }
-    .btn-trailer { background: var(--secondary); color: #fff; display:inline-block; text-align:center;}
-    .btn-trailer:hover { background: #444; }
-    .btn-alugar { background: var(--primary); color: #fff; }
-    .btn-alugar:hover { background: #e68a00; }
-    .btn-alugar
+    .btn-trailer { background:var(--secondary); color:#fff; }
+    .btn-trailer:hover { background:#444; }
+    .btn-alugar { background:var(--primary); color:#fff; }
+    .btn-alugar:hover { background:#e68a00; }
 
-    button#btn-more {
-      display: block;
-      margin: 2rem auto;
-      padding: 0.75rem 1.5rem;
-      background: var(--primary);
-      color: #fff;
-      border: none; border-radius: 8px;
-      cursor: pointer; font-size: 1rem;
-      transition: background .2s;
+    .pagination-controls {
+      display:flex; justify-content:center; gap:1rem; margin:2rem 0;
     }
-    button#btn-more:hover { background: #e68a00; }
-
-    
+    .pagination-controls button {
+      padding:.5rem 1rem; background:var(--primary); color:#fff;
+      border:none; border-radius:4px; cursor:pointer;
+      transition:opacity .2s;
+    }
+    .pagination-controls button:disabled { opacity:.5; cursor:default; }
   </style>
 </head>
 <body>
@@ -111,145 +92,131 @@
   </header>
 
   <main>
+
+   
+    <!-- Slider de gêneros -->
     <section class="categories">
       <h2>Gêneros</h2>
       <ul id="genre-list"></ul>
     </section>
 
-  <form method="get" action="{{ url_for('catalog') }}" class="filters">
-  <div class="filter">
-    <label>Ano</label>
-    <input name="year_min" type="number" placeholder="De" value="{{ filtros.year_min or '' }}">
-    <span>–</span>
-    <input name="year_max" type="number" placeholder="Até" value="{{ filtros.year_max or '' }}">
-  </div>
-  <div class="filter">
-    <label>Avaliação</label>
-    <input name="rating_min" type="number" step="0.1" placeholder="Mín" value="{{ filtros.rating_min or '' }}">
-    <span>–</span>
-    <input name="rating_max" type="number" step="0.1" placeholder="Máx" value="{{ filtros.rating_max or '' }}">
-  </div>
-  <div class="filter">
-    <label>Idioma</label>
-    <select name="language">
-      <option value="" {% if not filtros.language %}selected{% endif %}>Todas</option>
-      <option value="en" {% if filtros.language=='en' %}selected{% endif %}>Inglês</option>
-      <option value="pt" {% if filtros.language=='pt' %}selected{% endif %}>Português</option>
-      <!-- demais línguas -->
-    </select>
-  </div>
-  <button type="submit">Filtrar</button>
-</form>
 
 
-    <section class="films-container">
-  {% for f in filmes %}
-    <div class="film-card">
-      <img src="{{ f.Poster_Url }}" alt="{{ f.Title }}">
-      <div class="rating">{{ '%.1f'|format(f.Vote_Average) }}</div>
-      <div class="film-info">
-        <h3>{{ f.Title }}</h3>
-        <div class="controls">
-          <button class="btn-trailer" onclick="window.location.href='/film/${f.id}'">Detalhes</button>
-          <button class="btn-alugar"
-                  data-title="{{ f.Title }}"
-                  data-img="{{ f.Poster_Url }}"
-                  data-price="R$ {{ '%.2f'|format(f.Price) }}">
-            Add ao carrinho
-          </button>
-        </div>
+
+    <form method="get" action="{{ url_for('catalog') }}" class="filters">
+      <div class="filter">
+        <label>Ano</label>
+        <input name="year_min" type="number" placeholder="De" value="{{ filtros.year_min or '' }}">
+        <span>–</span>
+        <input name="year_max" type="number" placeholder="Até" value="{{ filtros.year_max or '' }}">
       </div>
-    </div>
-  {% else %}
-    <p>Nenhum filme encontrado para esses filtros.</p>
-  {% endfor %}
+      <div class="filter">
+        <label>Avaliação</label>
+        <input name="rating_min" type="number" step="0.1" placeholder="Mín" value="{{ filtros.rating_min or '' }}">
+        <span>–</span>
+        <input name="rating_max" type="number" step="0.1" placeholder="Máx" value="{{ filtros.rating_max or '' }}">
+      </div>
+      <div class="filter">
+        <label>Idioma</label>
+        <select name="language">
+          <option value="" {% if not filtros.language %}selected{% endif %}>Todas</option>
+          <option value="en" {% if filtros.language=='en' %}selected{% endif %}>Inglês</option>
+          <option value="pt" {% if filtros.language=='pt' %}selected{% endif %}>Português</option>
+        </select>
+      </div>
+      <button type="submit">Filtrar</button>
+    </form>
 
-<div class="pagination-controls">
-  <button id="btn-prev" style="display:none">Anterior</button>
-  <button id="btn-next">Próxima</button>
-</div>
+    <section id="movies-container" class="films-container">
+      {% for f in filmes %}
+        <div class="film-card">
+          <img src="{{ f.Poster_Url }}" alt="{{ f.Title }}">
+          <div class="rating">{{ '%.1f'|format(f.Vote_Average) }}</div>
+          <div class="film-info">
+            <h3>{{ f.Title }}</h3>
+            <div class="controls">
+              <button class="btn-trailer"
+                      onclick="window.location.href='{{ url_for('film_detail', film_id=f.id) }}';">
+                Detalhes
+              </button>
+              <button class="btn-alugar"
+                      data-title="{{ f.Title }}"
+                      data-img="{{ f.Poster_Url }}"
+                      data-price="R$ {{ '%.2f'|format(f.Price) }}">
+                Add ao carrinho
+              </button>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <p>Nenhum filme encontrado para esses filtros.</p>
+      {% endfor %}
+    </section>
+
+    <div class="pagination-controls">
+      <button id="btn-prev" disabled>Anterior</button>
+      <button id="btn-next">Próxima</button>
+    </div>
+  </main>
 
   <footer>
     <p>&copy; 2025 Aluga Filmes. Todos os direitos reservados.</p>
   </footer>
 
+  <script>
+    const perPage = 16;
+    let currentPage = 0;
+    let allCards = [];
+    let filteredCards = [];
 
-    <script>
-  const perPage = 16;
-  let currentPage = 0;
-
-  function showPage(page) {
-    const cards = document.querySelectorAll('#movies-container .film-card');
-    cards.forEach((card, i) => {
-      card.style.display =
-        (i >= page * perPage && i < (page + 1) * perPage)
-        ? 'flex' : 'none';
-    });
-    document.getElementById('btn-prev').style.display =
-      page > 0 ? 'inline-block' : 'none';
-    document.getElementById('btn-next').style.display =
-      (page + 1) * perPage < cards.length ? 'inline-block' : 'none';
-  }
-
-  document.getElementById('btn-prev').addEventListener('click', () => {
-    currentPage--;
-    showPage(currentPage);
-  });
-  document.getElementById('btn-next').addEventListener('click', () => {
-    currentPage++;
-    showPage(currentPage);
-  });
-
-  window.addEventListener('DOMContentLoaded', () => {
-    showPage(0);
-  });
-
-
-    async function montarGeneros() {
-      const resp = await fetch('/films');
-      const filmes = await resp.json();
-      const setG = new Set();
-      filmes.forEach(f => f.Genre.split(',').map(g => g.trim()).forEach(g => setG.add(g)));
+    // Inicializa lista de cards e gera slider
+    function montarGeneros() {
+      allCards = Array.from(document.querySelectorAll('#movies-container .film-card'));
+      const genres = new Set();
+      allCards.forEach(card => {
+        card.dataset.genre.split(',').map(g => g.trim()).forEach(g => genres.add(g));
+      });
       const ul = document.getElementById('genre-list');
-      ['Todos', ...setG].forEach(g => {
+      ['Todos', ...genres].forEach(g => {
         const li = document.createElement('li');
-        li.innerHTML = `<button data-genre="${g}">${g}</button>`;
+        const btn = document.createElement('button');
+        btn.textContent = g;
+        btn.addEventListener('click', () => {
+          ul.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filtrarPorGenero(g);
+        });
+        li.appendChild(btn);
         ul.appendChild(li);
       });
-      ul.addEventListener('click', e => {
-        if (e.target.tagName === 'BUTTON') {
-          ul.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-          e.target.classList.add('active');
-          carregarFilmes(e.target.dataset.genre);
-        }
-      });
+      // Ativa "Todos" por padrão
+      ul.querySelector('button').classList.add('active');
     }
 
-    function showPopup(msg) {
-      const pop = document.createElement('div');
-      pop.className = 'toast';
-      pop.textContent = msg;
-      document.body.appendChild(pop);
-      setTimeout(() => pop.remove(), 2000);
+    // Filtra e reexibe página
+    function filtrarPorGenero(genre) {
+      if (genre === 'Todos') filteredCards = allCards;
+      else filteredCards = allCards.filter(card => card.dataset.genre.split(',').map(g=>g.trim()).includes(genre));
+      currentPage = 0;
+      showPage(currentPage);
     }
 
-    function addToCart(movie) {
-      const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-      cart.push(movie);
-      localStorage.setItem('cartItems', JSON.stringify(cart));
-      showPopup('Filme adicionado ao carrinho!');
+    // Mostra cards da página atual
+    function showPage(page) {
+      const start = page * perPage;
+      const end = start + perPage;
+      allCards.forEach(card => card.style.display = 'none');
+      filteredCards.slice(start, end).forEach(card => card.style.display = 'flex');
+      document.getElementById('btn-prev').disabled = page === 0;
+      document.getElementById('btn-next').disabled = end >= filteredCards.length;
     }
 
-    document.body.addEventListener('click', e => {
-      if (e.target.classList.contains('btn-alugar')) {
-        const btn = e.target;
-        addToCart({ title: btn.dataset.title, img: btn.dataset.img, price: btn.dataset.price });
-      }
-    });
+    document.getElementById('btn-prev').addEventListener('click', () => { currentPage--; showPage(currentPage); });
+    document.getElementById('btn-next').addEventListener('click', () => { currentPage++; showPage(currentPage); });
 
     window.addEventListener('DOMContentLoaded', () => {
       montarGeneros();
-      carregarFilmes();
+      filtrarPorGenero('Todos');
     });
   </script>
 </body>
