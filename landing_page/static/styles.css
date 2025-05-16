@@ -283,3 +283,54 @@ footer {
     font-size: 1.8rem;
   }
 }
+
+
+
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
+.filter {
+  flex: 1 1 200px;
+  display: flex;
+  flex-direction: column;
+}
+.filter label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.range-inputs input {
+  width: 4.5rem;
+}
+.filters select,
+.range-inputs input {
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+#apply-filters {
+  align-self: flex-end;
+  padding: 0 1rem;
+  height: 2.5rem;
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+#apply-filters:hover {
+  opacity: .9;
+}

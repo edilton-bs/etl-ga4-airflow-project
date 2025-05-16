@@ -14,6 +14,9 @@ df['Year'] = pd.to_datetime(df['Release_Date'], errors='coerce').dt.year
 # Gerar preços aleatórios para os filmes
 df['Price'] = df['Title'].apply(lambda x: round(10 + (len(x) % 5) * 2 + (len(x) % 3), 2))
 
+# Formatar para float os valores de avaliação
+df['Vote_Average'] = df['Vote_Average'].astype(float)
+
 # Resetar índice para usar como id único
 df = df.reset_index().rename(columns={'index': 'id'})
 
@@ -26,7 +29,27 @@ def index():
 
 @app.route('/catalog')
 def catalog():
-    return render_template('catalog.html')
+    # cópia local sempre existe
+    df_local = df.copy()
+
+    # parâmetros vindos da query string  
+    y_min = request.args.get('year_min',   type=int)  # retorna None se não enviar :contentReference[oaicite:0]{index=0}
+    y_max = request.args.get('year_max',   type=int)
+    r_min = request.args.get('rating_min', type=float)
+    r_max = request.args.get('rating_max', type=float)
+    lang  = request.args.get('language',   type=str, default='')
+
+    # filtros
+    if y_min is not None:  df_local = df_local[df_local['Year']        >= y_min]
+    if y_max is not None:  df_local = df_local[df_local['Year']        <= y_max]
+    if r_min is not None:  df_local = df_local[df_local['Vote_Average']>= r_min]
+    if r_max is not None:  df_local = df_local[df_local['Vote_Average']<= r_max]
+    if lang:               df_local = df_local[df_local['Original_Language']== lang]
+
+    filmes = df_local.to_dict(orient='records')
+    return render_template('catalog.html', filmes=filmes, filtros=request.args)
+    
+
 
 @app.route('/cart')
 def cart():
