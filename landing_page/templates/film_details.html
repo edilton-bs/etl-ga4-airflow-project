@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ film.Title }} – Detalhes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
   <style>
     :root { --primary: #ff9900; --secondary: #333; --bg-light: #f4f4f4; }
     body { background: var(--bg-light); margin: 0; font-family: 'Poppins', sans-serif; }
@@ -47,7 +48,7 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/catalog">Catálogo</a></li>
-        <li><a href="/cart">Carrinho</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo - Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
   <style>
     :root {
       --primary: #ff9900;
@@ -105,7 +106,7 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/catalog">Catálogo</a></li>
-        <li><a href="/cart">Carrinho</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>
@@ -269,7 +270,7 @@
                     data-title="${f.Title}"
                     data-img="${f.Poster_Url}"
                     data-price="R$ ${Number(f.Price).toFixed(2)}">
-              Add ao carrinho
+              + carrinho
             </button>
           </div>
         </div>`;

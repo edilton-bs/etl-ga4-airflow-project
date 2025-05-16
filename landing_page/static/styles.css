@@ -346,3 +346,17 @@ footer {
     #btn-filter:hover {
       background: #e68a00;
     }
+
+
+    /* Badge de contagem */
+    .cart-count-badge {
+      background:red;
+      color:#fff;
+      border-radius:50%;
+      padding:0.15rem 0.4rem;
+      font-size:0.75rem;
+      position:absolute;
+      top:-0.4rem;
+      right:-0.6rem;
+      line-height:1;
+    }
