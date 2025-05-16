@@ -93,15 +93,10 @@
       const emptyMsg = document.getElementById('empty-msg');
       const totalElem = document.getElementById('cart-total');
       const totalValue = document.getElementById('total-value');
-      const cartCount = document.getElementById('cart-count');
 
-      function updateCartCount(count) {
-        cartCount.textContent = count;
-      }
 
       function renderCart() {
         const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
-        updateCartCount(cart.length);
         itemsList.innerHTML = '';
         if (cart.length === 0) {
           emptyMsg.style.display = 'block';

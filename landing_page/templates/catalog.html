@@ -191,7 +191,7 @@
 </section>
 
     <section class="films-container" id="films"></section>
-    <button id="btn-more">Mostrar Mais</button>
+    <div class="pagination-controls" id="pagination"></div>
   </main>
 
   <footer>
@@ -235,19 +235,55 @@
 
   // 3) Renderiza a página atual (16 itens por vez)
   function renderPage() {
-    const start = (currentPage - 1) * MAX_PER_PAGE;
-    const end = currentPage * MAX_PER_PAGE;
-    renderFilms(currentList.slice(start, end));
-    document.getElementById('btn-more').style.display =
-      currentList.length > end ? 'block' : 'none';
-  }
+      const start = (currentPage - 1) * MAX_PER_PAGE;
+      const end = currentPage * MAX_PER_PAGE;
+      renderFilms(currentList.slice(start, end));
+      renderPagination();
+    }
 
-  // 4) Botão “Mostrar Mais”
-  document.getElementById('btn-more')
-    .addEventListener('click', () => {
-      currentPage++;
-      renderPage();
-    });
+    function renderPagination() {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      const totalPages = Math.ceil(currentList.length / MAX_PER_PAGE) || 1;
+      if (totalPages < 2) return;
+      // Prev
+      const prev = document.createElement('button');
+      prev.textContent = 'Anterior';
+      prev.disabled = currentPage === 1;
+      prev.addEventListener('click', () => { if (currentPage>1) { currentPage--; renderPage(); }});
+      pagination.appendChild(prev);
+      // Pages
+      const pages = [];
+      if (totalPages <=5) {
+        for (let i=1;i<=totalPages;i++) pages.push(i);
+      } else {
+        pages.push(1);
+        let start = currentPage -1;
+        let end = currentPage +1;
+        if (start < 2) { start = 2; end = 4; }
+        if (end > totalPages-1) { end = totalPages-1; start = totalPages-3; }
+        if (start > 2) pages.push('...');
+        for (let i=start;i<=end;i++) pages.push(i);
+        if (end < totalPages-1) pages.push('...');
+        pages.push(totalPages);
+      }
+      pages.forEach(p => {
+        if (p === '...') {
+          const span = document.createElement('span'); span.textContent = '...'; pagination.appendChild(span);
+        } else {
+          const btn = document.createElement('button'); btn.textContent = p;
+          if (p === currentPage) btn.classList.add('active-page');
+          btn.addEventListener('click', () => { currentPage = p; renderPage(); });
+          pagination.appendChild(btn);
+        }
+      });
+      // Next
+      const next = document.createElement('button');
+      next.textContent = 'Próxima';
+      next.disabled = currentPage === totalPages;
+      next.addEventListener('click', () => { if (currentPage<totalPages) { currentPage++; renderPage(); }});
+      pagination.appendChild(next);
+    }
 
   // 5) Monta os cards no container
   function renderFilms(list) {
