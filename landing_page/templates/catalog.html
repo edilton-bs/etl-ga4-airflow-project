@@ -228,7 +228,7 @@
       if (totalPages < 2) return;
       // Prev
       const prev = document.createElement('button');
-      prev.textContent = 'Anterior';
+      prev.textContent = '<';
       prev.disabled = currentPage === 1;
       prev.addEventListener('click', () => { if (currentPage>1) { currentPage--; renderPage(); }});
       pagination.appendChild(prev);
@@ -259,7 +259,7 @@
       });
       // Next
       const next = document.createElement('button');
-      next.textContent = 'Próxima';
+      next.textContent = '>';
       next.disabled = currentPage === totalPages;
       next.addEventListener('click', () => { if (currentPage<totalPages) { currentPage++; renderPage(); }});
       pagination.appendChild(next);
