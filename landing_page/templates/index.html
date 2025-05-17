@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+   <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
 
 </head>
 <body>
@@ -14,90 +15,34 @@
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="catalog">Catálogo</a></li>
-        <li><a href="cart">Carrinho</a></li>
+        <li><a href="/catalog">Catálogo</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>
 
-  <section class="top-films">
-    <h2>Top 5 no IMDb esta semana</h2>
+  
+
+    <section class="top-films">
+    <h2>Top 10 filmes da semana</h2>
     <div class="films-container">
-      <!-- Filmes listados dinamicamente com imagens -->
+      {% for movie in movies %}
       <div class="film-card">
-        <img src="https://m.media-amazon.com/images/M/MV5BYWI3ODJlMzktY2U5NC00ZjdlLWE1MGItNWQxZDk3NWNjN2RhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="The Last of Us">
+        {% if movie.poster %}
+        <img src="{{ movie.poster }}" alt="{{ movie.title }}">
+        {% endif %}
         <div class="film-info">
-          <h3>The Last of Us</h3>
-          <button>Assistir Trailer</button>
-          <button class="btn-alugar"
-          data-title="The Last of Us"
-          data-img="https://m.media-amazon.com/images/M/MV5BYWI3ODJlMzktY2U5NC00ZjdlLWE1MGItNWQxZDk3NWNjN2RhXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-          data-price="R$ 21,99">
-  Alugar
-</button>
-
+          <h3>{{ movie.title }}</h3>
+          {% if movie.trailer %}
+          <a href="{{ movie.trailer }}" target="_blank">
+            <button>Assistir trailer</button>
+          </a>
+          {% endif %}
         </div>
       </div>
-      <div class="film-card">
-        <img src="https://m.media-amazon.com/images/M/MV5BNDIzNGUwZmYtODM0Yy00NjA3LTgxOGUtOTY0ZGM5MjBkM2I3XkEyXkFqcGc@._V1_.jpg" alt="Thunderbolts">
-        <div class="film-info">
-          <h3>Thunderbolts</h3>
-          <button>Assistir Trailer</button>
-          <button class="btn-alugar"
-          data-title="Thunderbolts"
-          data-img="https://m.media-amazon.com/images/M/MV5BNDIzNGUwZmYtODM0Yy00NjA3LTgxOGUtOTY0ZGM5MjBkM2I3XkEyXkFqcGc@._V1_.jpg"
-          data-price="R$ 18,99">
-  Alugar
-</button>
-        </div>
-      </div>
-
-
-      <!-- Repetir para os outros filmes -->
-        <div class="film-card">
-            <img src="https://m.media-amazon.com/images/M/MV5BNGI2MTJjMjUtMTJhOC00YTY2LTg1NjUtMTdmMjg4YTk2YjM5XkEyXkFqcGc@._V1_.jpg" alt="Andor">
-            <div class="film-info">
-            <h3>Andor</h3>
-            <button>Assistir Trailer</button>
-            <button class="btn-alugar"
-            data-title="Andor"
-            data-img="https://m.media-amazon.com/images/M/MV5BNGI2MTJjMjUtMTJhOC00YTY2LTg1NjUtMTdmMjg4YTk2YjM5XkEyXkFqcGc@._V1_.jpg"
-            data-price="R$ 14,99">
-  Alugar
-</button>
-
-
-            </div>
+      {% endfor %}
     </div>
-
-    <div class="film-card">
-        <img src="https://m.media-amazon.com/images/M/MV5BMjZiMDNhZWItZDk1YS00M2UyLTkxN2YtNDQ3ZmJjYTA4MzgwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Four seasons of the year">
-        <div class="film-info">
-        <h3>As Quatro Estações do Ano</h3>
-        <button>Assistir Trailer</button>
-        <button class="btn-alugar"
-        data-title="As Quatro Estações do Ano"
-        data-img="https://m.media-amazon.com/images/M/MV5BMjZiMDNhZWItZDk1YS00M2UyLTkxN2YtNDQ3ZmJjYTA4MzgwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-        data-price="R$ 12,99">
-  Alugar
-</button>
-        </div>
-    </div>
-
-    <div class="film-card">
-        <img src="https://m.media-amazon.com/images/M/MV5BODcxMWI2NDMtYTc3NC00OTZjLWFmNmUtM2NmY2I1ODkxYzczXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg" alt="Black Mirror">
-        <div class="film-info">
-        <h3>Black Mirror</h3>
-        <button>Assistir Trailer</button>
-        <button class="btn-alugar"
-        data-title="Black Mirror"
-        data-img="https://m.media-amazon.com/images/M/MV5BODcxMWI2NDMtYTc3NC00OTZjLWFmNmUtM2NmY2I1ODkxYzczXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg"
-        data-price="R$ 19,99">
-  Alugar
-</button>
-        </div>
-
-    </div>
+  </section>
 
     
   </section>

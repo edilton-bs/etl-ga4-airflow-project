@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{{ film.Title }} – Detalhes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
   <style>
     :root { --primary: #ff9900; --secondary: #333; --bg-light: #f4f4f4; }
     body { background: var(--bg-light); margin: 0; font-family: 'Poppins', sans-serif; }
@@ -47,17 +48,44 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/catalog">Catálogo</a></li>
-        <li><a href="/cart">Carrinho</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>
 
   <main>
     <h1>{{ film.Title }}</h1>
+    <!-- <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}" class="poster"> -->
+
+    <div class="trailer-preview">
+  <div class="poster-wrapper">
     <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}" class="poster">
+    <div class="play-overlay" onclick="openTrailer()">▶</div>
+  </div>
+</div>
+
+
+<!-- Modal oculto por padrão -->
+<div id="trailer-modal" class="modal" onclick="closeTrailer()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close-btn" onclick="closeTrailer()">✕</span>
+    <div class="video-wrapper">
+      <!-- converte URL normal em embed (watch?v= → embed/) -->
+      <iframe 
+        src="{{ film.Trailer.replace('watch?v=', 'embed/') }}" 
+        title="Trailer de {{ film.Title }}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+
+
     <div class="details-meta">
       <p><strong>Avaliação:</strong> {{ film.Vote_Average }} / 10</p>
       <p><strong>Ano:</strong> {{ film.Year }}</p>
+      <p><strong>Diretor:</strong> {{ film.Director }}</p>
       <p><strong>Língua:</strong> {{ film.Original_Language }}</p>
     </div>
     <section class="sinopse">
@@ -98,6 +126,17 @@
     document.body.append(pop);
     setTimeout(() => pop.remove(), 2000);
   }
+
+
+
+
+  function openTrailer() {
+  document.getElementById('trailer-modal').style.display = 'flex';
+}
+function closeTrailer() {
+  document.getElementById('trailer-modal').style.display = 'none';
+}
+
 </script>
 </body>
 </html>

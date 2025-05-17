@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Catálogo - Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
   <style>
     :root {
       --primary: #ff9900;
@@ -105,7 +106,7 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/catalog">Catálogo</a></li>
-        <li><a href="/cart">Carrinho</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>
@@ -140,57 +141,37 @@
   <div class="filter">
     <label for="lang">Idioma</label>
     <select id="lang">
-      <option value="">Todas</option>
-      <option value="en">Inglês</option>
-      <option value="ja">Japonês</option>
-      <option value="fr">Francês</option>
-      <option value="hi">Hindi</option>
-      <option value="es">Espanhol</option>
-      <option value="ru">Russo</option>
-      <option value="de">Alemão</option>
-      <option value="th">Tailandês</option>
-      <option value="ko">Coreano</option>
-      <option value="tr">Turco</option>
-      <option value="cn">Chinês (CN)</option>
-      <option value="zh">Chinês</option>
-      <option value="it">Italiano</option>
-      <option value="pt">Português</option>
-      <option value="ml">Malaiala</option>
-      <option value="pl">Polonês</option>
-      <option value="fi">Finlandês</option>
-      <option value="no">Norueguês</option>
-      <option value="da">Dinamarquês</option>
-      <option value="id">Indonésio</option>
-      <option value="sv">Sueco</option>
-      <option value="nl">Holandês</option>
-      <option value="te">Telugu</option>
-      <option value="sr">Sérvio</option>
-      <option value="is">Islandês</option>
-      <option value="ro">Romeno</option>
-      <option value="tl">Tagalo</option>
-      <option value="fa">Persa</option>
-      <option value="uk">Ucraniano</option>
-      <option value="nb">Norueguês Bokmål</option>
-      <option value="eu">Basco</option>
-      <option value="lv">Letão</option>
-      <option value="ar">Árabe</option>
-      <option value="el">Grego</option>
-      <option value="cs">Tcheco</option>
-      <option value="ms">Malaio</option>
-      <option value="bn">Bengali</option>
-      <option value="ca">Catalão</option>
-      <option value="la">Latim</option>
-      <option value="ta">Tâmil</option>
-      <option value="hu">Húngaro</option>
-      <option value="he">Hebraico</option>
-      <option value="et">Estoniano</option>
+      <option value="">Todos</option>
+      <option value="Italiano">Italiano</option>
+      <option value="Francês">Francês</option>
+      <option value="Inglês">Inglês</option>
+      <option value="Sueco">Sueco</option>
+      <option value="Japonês">Japonês</option>
+      <option value="Chinês">Chinês</option>
+      <option value="Hindi">Hindi</option>
+      <option value="Espanhol">Espanhol</option>
+      <option value="Português">Português</option>
+      <option value="Chinês">Chinês</option>
+      <option value="Alemão">Alemão</option>
+      <option value="Hebraico">Hebraico</option>
+      <option value="Coreano">Coreano</option>
+      <option value="Dinamarquês">Dinamarquês</option>
+      <option value="Norueguês">Norueguês</option>
+      <option value="Telugu">Telugu</option>
+      <option value="Russo">Russo</option>
+      <option value="Húngaro">Húngaro</option>
+      <option value="Persa">Persa</option>
+      <option value="Holandês">Holandês</option>
+      <option value="Letão">Letão</option>
+      <option value="Finlandês">Finlandês</option>
+      <option value="Ucraniano">Ucraniano</option>
     </select>
   </div>
   <button id="btn-filter">Filtrar</button>
 </section>
 
     <section class="films-container" id="films"></section>
-    <button id="btn-more">Mostrar Mais</button>
+    <div class="pagination-controls" id="pagination"></div>
   </main>
 
   <footer>
@@ -234,19 +215,55 @@
 
   // 3) Renderiza a página atual (16 itens por vez)
   function renderPage() {
-    const start = (currentPage - 1) * MAX_PER_PAGE;
-    const end = currentPage * MAX_PER_PAGE;
-    renderFilms(currentList.slice(start, end));
-    document.getElementById('btn-more').style.display =
-      currentList.length > end ? 'block' : 'none';
-  }
+      const start = (currentPage - 1) * MAX_PER_PAGE;
+      const end = currentPage * MAX_PER_PAGE;
+      renderFilms(currentList.slice(start, end));
+      renderPagination();
+    }
 
-  // 4) Botão “Mostrar Mais”
-  document.getElementById('btn-more')
-    .addEventListener('click', () => {
-      currentPage++;
-      renderPage();
-    });
+    function renderPagination() {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      const totalPages = Math.ceil(currentList.length / MAX_PER_PAGE) || 1;
+      if (totalPages < 2) return;
+      // Prev
+      const prev = document.createElement('button');
+      prev.textContent = 'Anterior';
+      prev.disabled = currentPage === 1;
+      prev.addEventListener('click', () => { if (currentPage>1) { currentPage--; renderPage(); }});
+      pagination.appendChild(prev);
+      // Pages
+      const pages = [];
+      if (totalPages <=5) {
+        for (let i=1;i<=totalPages;i++) pages.push(i);
+      } else {
+        pages.push(1);
+        let start = currentPage -1;
+        let end = currentPage +1;
+        if (start < 2) { start = 2; end = 4; }
+        if (end > totalPages-1) { end = totalPages-1; start = totalPages-3; }
+        if (start > 2) pages.push('...');
+        for (let i=start;i<=end;i++) pages.push(i);
+        if (end < totalPages-1) pages.push('...');
+        pages.push(totalPages);
+      }
+      pages.forEach(p => {
+        if (p === '...') {
+          const span = document.createElement('span'); span.textContent = '...'; pagination.appendChild(span);
+        } else {
+          const btn = document.createElement('button'); btn.textContent = p;
+          if (p === currentPage) btn.classList.add('active-page');
+          btn.addEventListener('click', () => { currentPage = p; renderPage(); });
+          pagination.appendChild(btn);
+        }
+      });
+      // Next
+      const next = document.createElement('button');
+      next.textContent = 'Próxima';
+      next.disabled = currentPage === totalPages;
+      next.addEventListener('click', () => { if (currentPage<totalPages) { currentPage++; renderPage(); }});
+      pagination.appendChild(next);
+    }
 
   // 5) Monta os cards no container
   function renderFilms(list) {
@@ -269,7 +286,7 @@
                     data-title="${f.Title}"
                     data-img="${f.Poster_Url}"
                     data-price="R$ ${Number(f.Price).toFixed(2)}">
-              Add ao carrinho
+              + carrinho
             </button>
           </div>
         </div>`;

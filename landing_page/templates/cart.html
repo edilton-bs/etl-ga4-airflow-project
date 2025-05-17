@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Carrinho - Aluga Filmes</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
   <style>
     :root {
       --primary: #ff9900;
       --secondary: #333;
       --bg-light: #f9f9f9;
     }
+
     
     main { max-width:800px; margin: 2rem auto; padding:0 1rem; }
     .cart-items { background: #fff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 1rem; }
@@ -60,7 +62,7 @@
       <ul>
         <li><a href="/">Home</a></li>
         <li><a href="/catalog">Catálogo</a></li>
-        <li><a href="/cart">Carrinho</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
       </ul>
     </nav>
   </header>
@@ -91,6 +93,7 @@
       const emptyMsg = document.getElementById('empty-msg');
       const totalElem = document.getElementById('cart-total');
       const totalValue = document.getElementById('total-value');
+
 
       function renderCart() {
         const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
