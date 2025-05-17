@@ -55,10 +55,37 @@
 
   <main>
     <h1>{{ film.Title }}</h1>
+    <!-- <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}" class="poster"> -->
+
+    <div class="trailer-preview">
+  <div class="poster-wrapper">
     <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}" class="poster">
+    <div class="play-overlay" onclick="openTrailer()">▶</div>
+  </div>
+</div>
+
+
+<!-- Modal oculto por padrão -->
+<div id="trailer-modal" class="modal" onclick="closeTrailer()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <span class="close-btn" onclick="closeTrailer()">✕</span>
+    <div class="video-wrapper">
+      <!-- converte URL normal em embed (watch?v= → embed/) -->
+      <iframe 
+        src="{{ film.Trailer.replace('watch?v=', 'embed/') }}" 
+        title="Trailer de {{ film.Title }}"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+</div>
+
+
     <div class="details-meta">
       <p><strong>Avaliação:</strong> {{ film.Vote_Average }} / 10</p>
       <p><strong>Ano:</strong> {{ film.Year }}</p>
+      <p><strong>Diretor:</strong> {{ film.Director }}</p>
       <p><strong>Língua:</strong> {{ film.Original_Language }}</p>
     </div>
     <section class="sinopse">
@@ -99,6 +126,17 @@
     document.body.append(pop);
     setTimeout(() => pop.remove(), 2000);
   }
+
+
+
+
+  function openTrailer() {
+  document.getElementById('trailer-modal').style.display = 'flex';
+}
+function closeTrailer() {
+  document.getElementById('trailer-modal').style.display = 'none';
+}
+
 </script>
 </body>
 </html>
