@@ -14,7 +14,7 @@ df = pd.read_csv('static/filmes_tmdb.csv')  # Ajuste o caminho conforme necessá
 # df['Genre'] = df['Title'].apply(lambda x: generos[len(x) % len(generos)])
 
 # dar pontuação aleatória para os filmes
-df['Vote_Average'] = df['Title'].apply(lambda x: round(5 + (len(x) % 5) * 2 + (len(x) % 3), 1))
+# df['Vote_Average'] = df['Title'].apply(lambda x: round(5 + (len(x) % 5) * 2 + (len(x) % 3), 1))
 
 # remove todas as linhas que tiver algum valor nulo/NaN
 # df.dropna(inplace=True)
