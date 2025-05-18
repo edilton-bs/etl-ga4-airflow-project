@@ -188,7 +188,7 @@ main, section {
 
 .film-card img {
   width: 100%;
-  height: 320px;
+  height: 350px;
   object-fit: cover;
 }
 
