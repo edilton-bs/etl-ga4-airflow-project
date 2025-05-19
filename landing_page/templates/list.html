@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-YSQ1BD02D1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-YSQ1BD02D1');
+</script>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MR88PTVH');</script>
+<!-- End Google Tag Manager -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lista de recomendação</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="{{ url_for('static', filename='cart-badge.js') }}"></script>
+
+    <style>
+    :root {
+      --primary: #ff9900;
+      --secondary: #333;
+      --bg-light: #f4f4f4;
+    }
+    
+
+    main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+    /* Gêneros slider */
+    .categories ul {
+      display: flex; gap: 1rem; overflow-x: auto;
+      padding: 0.75rem 0; margin: 0 0 2rem 0;
+      scroll-snap-type: x mandatory;
+    }
+    .categories li { list-style: none; flex: 0 0 auto; scroll-snap-align: start; }
+    .categories button {
+      background: var(--primary); color: #fff;
+      border: none; padding: 0.5rem 1rem; border-radius: 8px;
+      cursor: pointer; font-weight: 600;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .categories button.active { box-shadow: 0 0 0 3px rgba(255,153,0,0.5); }
+    .categories button:hover { transform: translateY(-2px); }
+
+    /* Grid de cards de filmes */
+    .films-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px,1fr));
+      gap: 1.5rem;
+    }
+    .film-card {
+      position: relative;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .film-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .film-card img {
+      width: 100%; height: 350px;
+      object-fit: cover;
+    }
+    .rating {
+      position: absolute;
+      top: 0.5rem; right: 0.5rem;
+      background: rgba(0,0,0,0.7);
+      color: #fff; padding: 0.25rem 0.5rem;
+      border-radius: 4px; font-size: 0.85rem; font-weight: 600;
+    }
+    .film-info {
+      padding: 1rem;
+      flex: 1;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .film-info h3 { font-size: 1.1rem; margin: 0 0 0.5rem; }
+    .controls {
+      display: flex; gap: 0.5rem;
+    }
+    .controls button {
+      flex: 1;
+      padding: 0.5rem;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-weight: 600;
+      transition: background .2s;
+    }
+    .btn-trailer { background: var(--secondary); color: #fff; display:inline-block; text-align:center;}
+    .btn-trailer:hover { background: #444; }
+    .btn-alugar { background: var(--primary); color: #fff; }
+    .btn-alugar:hover { background: #e68a00; }
+    .btn-alugar
+
+    button#btn-more {
+      display: block;
+      margin: 2rem auto;
+      padding: 0.75rem 1.5rem;
+      background: var(--primary);
+      color: #fff;
+      border: none; border-radius: 8px;
+      cursor: pointer; font-size: 1rem;
+      transition: background .2s;
+    }
+    button#btn-more:hover { background: #e68a00; }
+
+    
+  </style>
+  
+</head>
+<body>
+
+    <body>
+  <!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MR88PTVH"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+  <header>
+    <h1>Aluga Filmes</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/catalog">Catálogo</a></li>
+        <li><a href="/cart">Carrinho <span id="cart-count" class="cart-count-badge">0</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+    <main>
+    <h1>Lista de recomendação</h1>
+
+    Esses filmes foram recomendados para você (Assista 🔪)
+
+    <!-- 1) Container de grid idêntico ao do catálogo -->
+    <section class="films-container">
+      {% for film in films %}
+        <div class="film-card">
+          <img src="{{ film.Poster_Url }}" alt="{{ film.Title }}">
+          <div class="rating">{{ "%.1f"|format(film.Vote_Average) }}</div>
+          <div class="film-info">
+            <h3>{{ film.Title }}</h3>
+            <div class="controls">
+              <button class="btn-trailer"
+                      onclick="location.href='/film/{{ film.id }}'">
+                Detalhes
+              </button>
+              <button class="btn-alugar"
+                      data-id="{{ film.id }}"
+                      data-title="{{ film.Title }}"
+                      data-img="{{ film.Poster_Url }}"
+                      data-price="R$ {{ '%.2f'|format(film.Price) }}">
+                + carrinho
+              </button>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </section>
+  </main>
+
+
+
+<footer>
+    <p>&copy; 2025 Aluga Filmes. Todos os direitos reservados.</p>
+  </footer>
+
+    <script>
+        function addToCart(movie) {
+      const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
+      cart.push(movie);
+      localStorage.setItem('cartItems', JSON.stringify(cart));
+      showPopup('Filme adicionado ao carrinho!');
+    }
+
+    document.body.addEventListener('click', e => {
+      if (e.target.classList.contains('btn-alugar')) {
+        const btn = e.target;
+        addToCart({ id: btn.dataset.id,title: btn.dataset.title, img: btn.dataset.img, price: btn.dataset.price });
+      }
+    });
+
+    </script>
+
+
+</body>
+</html>

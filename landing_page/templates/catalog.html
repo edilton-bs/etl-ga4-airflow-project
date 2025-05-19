@@ -305,6 +305,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               Detalhes
             </button>
             <button class="btn-alugar"
+                    data-id="${f.id}"
                     data-title="${f.Title}"
                     data-img="${f.Poster_Url}"
                     data-price="R$ ${Number(f.Price).toFixed(2)}">
@@ -363,7 +364,7 @@ function showPopup(msg) {
     document.body.addEventListener('click', e => {
       if (e.target.classList.contains('btn-alugar')) {
         const btn = e.target;
-        addToCart({ title: btn.dataset.title, img: btn.dataset.img, price: btn.dataset.price });
+        addToCart({ id: btn.dataset.id,title: btn.dataset.title, img: btn.dataset.img, price: btn.dataset.price });
       }
     });
 

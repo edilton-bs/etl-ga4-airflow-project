@@ -103,6 +103,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <button class="secondary" id="clear-btn">Limpar Carrinho</button>
       <button class="primary" id="checkout-btn">Finalizar Compra</button>
     </div>
+
+    <button id="generate-share-link" style="margin-top: 16px;">Copiar link de recomendação</button>
+<input type="text" id="share-link" readonly style="width: 80%; margin-top: 8px; display: none;">
+
+
   </main>
 
   <footer>
@@ -168,6 +173,40 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
 
       renderCart();
+
+
+  // Função para obter o carrinho do localStorage (ajustada para 'cartItems')
+function getCart() {
+    const cart = localStorage.getItem('cartItems');
+    return cart ? JSON.parse(cart) : [];
+}
+
+// Função para gerar o link de recomendação
+function generateShareLink() {
+    const cart = getCart();
+    if (cart.length === 0) {
+        alert('Seu carrinho está vazio!');
+        return;
+    }
+    // Supondo que cada item do carrinho tem um campo 'id'
+    const ids = cart.map(filme => filme.id).join(',');
+    const encoded = btoa(ids); // codifica em Base64
+    const link = `${window.location.origin}/list/${encoded}`;
+
+    // Exibe o link em um input para fácil cópia
+    const shareInput = document.getElementById('share-link');
+    shareInput.value = link;
+    // shareInput.style.display = 'block';
+    shareInput.select();
+    shareInput.setSelectionRange(0, 99999); // Para mobile
+    navigator.clipboard.writeText(link);
+}
+
+// Adiciona o listener ao botão
+document.getElementById('generate-share-link').addEventListener('click', generateShareLink);
+
+
+
     });
   </script>
 </body>

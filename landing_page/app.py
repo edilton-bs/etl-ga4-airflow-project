@@ -1,6 +1,7 @@
 from flask import Flask, render_template, jsonify, request
 import pandas as pd
 import requests
+import base64
 import os
 # from tmdbv3api import TMDbs
 
@@ -90,6 +91,17 @@ def film_detail(film_id):
     # Converte para dict simples
     film = film.iloc[0].to_dict()
     return render_template('film_details.html', film=film)
+
+@app.route('/list/<encoded_ids>')
+def list(encoded_ids):
+    try:
+        ids_str = base64.b64decode(encoded_ids).decode()
+        id_list = [int(x) for x in ids_str.split(',') if x.isdigit()]
+    except Exception:
+        id_list = []
+    selected_films = df[df['id'].isin(id_list)]
+    films = selected_films.to_dict(orient='records')
+    return render_template('list.html', films=films)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
