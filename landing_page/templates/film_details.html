@@ -105,10 +105,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
     <div class="details-meta">
-      <p><strong>Avaliação:</strong> {{ film.Vote_Average }} / 10</p>
-      <p><strong>Ano:</strong> {{ film.Year }}</p>
-      <p><strong>Diretor:</strong> {{ film.Director }}</p>
-      <p><strong>Língua:</strong> {{ film.Original_Language }}</p>
+      <p><strong>Avaliação:</strong> <br/> {{ film.Vote_Average }} / 10</p>
+      <p><strong>Ano:</strong> <br/> {{ film.Year }}</p>
+      <p><strong>Direção:</strong> <br/> {{ film.Director }}</p>
+      <p><strong>Língua:</strong> <br/> {{ film.Original_Language }}</p>
+      <p><strong>Gênero:</strong> <br/> {{ film.Genre }}</p>
     </div>
     <section class="sinopse">
       <h2>Sinopse</h2>
@@ -128,6 +129,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // Adiciona filme ao carrinho como array
   document.getElementById('btn-alugar-detail').addEventListener('click', () => {
     const movie = {
+      id: "{{ film.id }}",
       title: "{{ film.Title }}",
       img: "{{ film.Poster_Url }}",
       price: "R$ {{ '%.2f' % film.Price }}"
