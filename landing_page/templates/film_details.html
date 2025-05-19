@@ -57,6 +57,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       transition: background .2s;
     }
     .btn-alugar:hover { background: #e68a00; }
+
+    /* Grid para metadados */
+    .meta-grid {
+      display: grid;  
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));  /* Responsivo */ :contentReference[oaicite:4]{index=4}
+      gap: var(--gap);
+      font-size: 0.95rem;
+    }
+    .meta-grid p { margin:0; line-height:1.4; }
+    .meta-grid p span { display:block; font-weight:600; }
   </style>
 </head>
 <body>
@@ -104,13 +114,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </div>
 
 
-    <div class="details-meta">
-      <p><strong>Avaliação:</strong> <br/> {{ film.Vote_Average }} / 10</p>
-      <p><strong>Ano:</strong> <br/> {{ film.Year }}</p>
-      <p><strong>Direção:</strong> <br/> {{ film.Director }}</p>
-      <p><strong>Língua:</strong> <br/> {{ film.Original_Language }}</p>
-      <p><strong>Gênero:</strong> <br/> {{ film.Genre }}</p>
-    </div>
+    <div class="meta-grid">
+          <p><span>Avaliação</span>{{ film.Vote_Average }} /10</p>
+          <p><span>Ano</span>{{ film.Year }}</p>
+          <p><span>Direção</span>{{ film.Director or '–' }}</p>
+          <p><span>Língua</span>{{ film.Original_Language }}</p>
+          <p><span>Gênero</span>{{ film.Genre }}</p>
+        </div>
     <section class="sinopse">
       <h2>Sinopse</h2>
       <p>{{ film.Overview }}</p>
