@@ -435,3 +435,37 @@ footer {
   justify-content: center;
   z-index: 1000;
 }
+
+
+
+.search {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1 1 200px;
+      
+    }
+    .search label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--secondary);
+    }
+    .search input,
+    .search select {
+      padding: 0.5rem;
+      border: 1px solid var(--filter-border);
+      border-radius: 4px;
+      font-size: 0.9rem;
+      transition: border-color .2s;
+    }
+    .search input:focus,
+    .search select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(255,153,0,0.3);
+    }
+    .search span {
+      align-self: center;
+      font-weight: 600;
+      color: var(--secondary);
+    }
