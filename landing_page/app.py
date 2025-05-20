@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # Carregar o CSV 
-df = pd.read_csv('static/filmes_tmdb.csv')  # Ajuste o caminho conforme necessário
+df = pd.read_csv('static/movies_final.csv')  # Ajuste o caminho conforme necessário
 
 # dar Gêneros aleatórios para os filmes
 # generos = ['Ação', 'Aventura', 'Comédia', 'Drama', 'Terror', 'Ficção Científica', 'Romance', 'Animação']
@@ -90,6 +90,9 @@ def film_detail(film_id):
         return "Filme não encontrado", 404
     # Converte para dict simples
     film = film.iloc[0].to_dict()
+
+    # supondo que 'film' seja um dict vindo do seu DataFrame ou API
+    # film['Trailer'] = film.get('Trailer') or ''  # substitui None/NaN/float por string vazia
     return render_template('film_details.html', film=film)
 
 @app.route('/list/<encoded_ids>')

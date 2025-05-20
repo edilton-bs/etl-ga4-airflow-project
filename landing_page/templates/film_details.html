@@ -98,13 +98,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
 <!-- Modal oculto por padrão -->
+
+
+{% if film.Trailer %}
 <div id="trailer-modal" class="modal" onclick="closeTrailer()">
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="close-btn" onclick="closeTrailer()">✕</span>
     <div class="video-wrapper">
-      <!-- converte URL normal em embed (watch?v= → embed/) -->
-      <iframe 
-        src="{{ film.Trailer.replace('watch?v=', 'embed/') }}" 
+      <iframe
+        src="{{ film.Trailer
+                | default('')      
+                | replace('watch?v=', 'embed/') }}"
         title="Trailer de {{ film.Title }}"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowfullscreen>
@@ -112,6 +116,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     </div>
   </div>
 </div>
+{% endif %}
+
 
 
     <div class="meta-grid">
