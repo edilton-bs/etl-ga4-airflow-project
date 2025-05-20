@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 
 # Carregar o CSV 
-df = pd.read_csv('static/movies_final.csv')  # Ajuste o caminho conforme necessário
+df = pd.read_csv('static/filmes_tmdb.csv')  # Ajuste o caminho conforme necessário
 
 # dar Gêneros aleatórios para os filmes
 # generos = ['Ação', 'Aventura', 'Comédia', 'Drama', 'Terror', 'Ficção Científica', 'Romance', 'Animação']
