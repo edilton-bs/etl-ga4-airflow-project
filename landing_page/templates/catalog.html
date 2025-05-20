@@ -226,21 +226,25 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   // 1) Carrega filmes por gênero e atualiza rawList
   async function carregarFilmes(genre = 'Todos') {
-    let url = '/films';
-    if (genre !== 'Todos') url += `?genre=${encodeURIComponent(genre)}`;
-    const resp = await fetch(url);
-    rawList = await resp.json();
+  const url = genre==='Todos'
+    ? '/films'
+    : `/films?genre=${encodeURIComponent(genre)}`;
+  rawList = await (await fetch(url)).json();
 
-    // ➊ inicializa Fuse para busca em rawList pelo campo Title
-    fuse = new Fuse(rawList, {
-      keys: ['Title'],
-      threshold: 0.3,
-      ignoreLocation: true
-    });  // :contentReference[oaicite:1]{index=1}
+  // Inicializa Fuse.js para buscar em TÍTULO e DIRETOR
+  fuse = new Fuse(rawList, {
+    keys: [
+      { name: 'Title',    weight: 0.5 },  // peso maior ao título
+      { name: 'Overview', weight: 0.2 },   // busca também por overview
+      { name: 'Director', weight: 0.3 }   // busca também por diretor
+    ],
+    threshold: 0.3,
+    ignoreLocation: true
+  });  // ‘keys’ define os campos pesquisados :contentReference[oaicite:1]{index=1}
 
+  applyFilters();
+}
 
-    applyFilters();
-  }
 
   // 2) Aplica filtros de ano, avaliação e idioma sobre rawList
   function applyFilters() {
@@ -249,6 +253,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const rMin = parseFloat(document.getElementById('rating-min').value) || 0;
     const rMax = parseFloat(document.getElementById('rating-max').value) || 10;
     const lang = document.getElementById('lang').value;
+    
 
     currentList = rawList.filter(f => {
       const year = f.Year;                             // usa Year direto
@@ -407,20 +412,15 @@ function showPopup(msg) {
 
 
     // ➋ quando o usuário digitar, faz busca fuzzy em currentList
-    document.getElementById('search-input')
-      .addEventListener('input', e => {
-        const q = e.target.value.trim();
-        if (q.length > 0 && fuse) {
-          // executa Fuse.js e extrai apenas os itens encontrados
-          const results = fuse.search(q);
-          currentList = results.map(r => r.item);
-        } else {
-          // sem termo, volta à lista completa
-          currentList = [...rawList];
-        }
-        currentPage = 1;
-    renderPage();
-  });
+    document.getElementById('search-input').addEventListener('input', e => {
+  const q = e.target.value.trim();
+  currentList = q && fuse
+    ? fuse.search(q).map(r => r.item)
+    : [...rawList];
+  currentPage = 1;
+  renderPage();
+});
+
 
     
   });

@@ -76,7 +76,7 @@ def get_films():
     if genre and genre != 'Todos':
         data = data[data['Genre'].str.contains(genre, case=False, na=False)]
     # Garante as colunas corretas
-    films = data[['Title', 'Poster_Url', 'Genre', 'Year', 'Price', 'Overview', 'Vote_Average', 'id', 'Original_Language']].to_dict(orient='records')
+    films = data[['Title', 'Poster_Url', 'Genre', 'Year', 'Price', 'Overview', 'Vote_Average', 'id', 'Original_Language', 'Director']].to_dict(orient='records')
     return jsonify(films)
 
 
