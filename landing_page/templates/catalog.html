@@ -387,6 +387,18 @@ function showPopup(msg) {
     }
 
     function addToCart(movie) {
+
+      // 1. Dispara o evento add_to_cart no GA4
+      gtag('event', 'add_to_cart', {
+        currency: 'BRL',                                       // obrigatório se enviar value
+        value: parseFloat(movie.price.replace(/[^0-9.]/g, '')),// valor numérico
+        items: [{                                              // array de itens
+          item_id: movie.id,
+          item_name: movie.title,
+          price: parseFloat(movie.price.replace(/[^0-9.]/g, ''))
+        }]
+      });
+
       const cart = JSON.parse(localStorage.getItem('cartItems') || '[]');
       cart.push(movie);
       localStorage.setItem('cartItems', JSON.stringify(cart));
