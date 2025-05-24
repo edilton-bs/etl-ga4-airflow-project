@@ -155,11 +155,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       
       <div class="search">
-        <label>Pesquisar</label>
+        <label>Filtro de busca</label>
   <input
     type="search"
     id="search-input"
-    placeholder="Pesquisar filmes, diretor..."
+    placeholder="Título, diretor ou palavra-chave"
     autocomplete="off"
   />
 </div>
@@ -178,7 +178,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <input id="rating-max" type="number" step="0.1" placeholder="Máx" min="0" max="10">
   </div>
   <div class="filter">
-    <label for="lang">Idioma</label>
+    <label for="lang">Idioma original</label>
     <select id="lang">
       <option value="">Todos</option>
       <option value="Italiano">Italiano</option>
@@ -224,6 +224,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   let currentList = [];
   let currentPage = 1;
 
+
+  // Inicialização Fuse.js
+    function initFuse() {
+      fuse = new Fuse(rawList, {
+        keys: [
+          { name: 'Title',    weight: 0.5 },
+          { name: 'Overview', weight: 0.2 },
+          { name: 'Director', weight: 0.3 }
+        ],
+        threshold: 0.3,
+        ignoreLocation: true
+      });  // Fuse.js search :contentReference[oaicite:0]{index=0}
+    }
+
   // 1) Carrega filmes por gênero e atualiza rawList
   async function carregarFilmes(genre = 'Todos') {
   const url = genre==='Todos'
@@ -248,6 +262,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   // 2) Aplica filtros de ano, avaliação e idioma sobre rawList
   function applyFilters() {
+
+     // 1. Obter termo de busca
+      const q = document.getElementById('search-input').value.trim();
+
+      // 2. Buscar fuzzy (se existir termo)
+      let listaFiltrada = q && fuse
+        ? fuse.search(q).map(r => r.item)
+        : [...rawList];
+
+
     const yMin = parseInt(document.getElementById('year-min').value) || -Infinity;
     const yMax = parseInt(document.getElementById('year-max').value) || Infinity;
     const rMin = parseFloat(document.getElementById('rating-min').value) || 0;
@@ -255,7 +279,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const lang = document.getElementById('lang').value;
     
 
-    currentList = rawList.filter(f => {
+    currentList = listaFiltrada.filter(f => {
       const year = f.Year;                             // usa Year direto
       const rating = parseFloat(f.Vote_Average);       // converte string para float
       return year >= yMin && year <= yMax
@@ -422,16 +446,6 @@ function showPopup(msg) {
     montarGeneros();
     carregarFilmes();
 
-
-    // ➋ quando o usuário digitar, faz busca fuzzy em currentList
-    document.getElementById('search-input').addEventListener('input', e => {
-  const q = e.target.value.trim();
-  currentList = q && fuse
-    ? fuse.search(q).map(r => r.item)
-    : [...rawList];
-  currentPage = 1;
-  renderPage();
-});
 
 
     
